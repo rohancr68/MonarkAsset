@@ -356,7 +356,7 @@
     const selects = e.target.querySelectorAll('select');
 
     try {
-      const res  = await fetch('monarkasset-production-1e10.up.railway.app/api/contact', {
+      const res  = await fetch('https://monarkasset-production-1e10.up.railway.app/api/contact', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
