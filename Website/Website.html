@@ -356,7 +356,7 @@
     const selects = e.target.querySelectorAll('select');
 
     try {
-      const res  = await fetch('http://localhost:3002/api/contact', {
+      const res  = await fetch('monarkasset-production-1e10.up.railway.app/api/contact', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -386,7 +386,7 @@
   }
   async function fetchMarketData() {
   try {
-    const res  = await fetch('http://localhost:3001/api/market');
+    const res  = await fetch('monarkasset-production.up.railway.app/api/market');
     const json = await res.json();
     if (!json.success || !json.data) return;
     const container = document.getElementById('ticker-inner');
