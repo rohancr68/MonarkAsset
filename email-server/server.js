@@ -148,7 +148,7 @@ setInterval(() => {
   }).on('error', (err) => {
     console.warn('Keep-alive ping failed:', err.message);
   });
-}, 5 * 60 * 1000); // every 5 minutes
+}, 5 * 60 * 1000);
 
 // ── Start ────────────────────────────────────────────────────
 app.listen(PORT, () => {
