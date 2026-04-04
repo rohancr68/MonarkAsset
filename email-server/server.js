@@ -138,6 +138,18 @@ app.post('/api/contact', async (req, res) => {
 // ── Health check ─────────────────────────────────────────────
 app.get('/health', (req, res) => res.json({ status: 'ok', server: 'email' }));
 
+// ── Keep alive ──────────────────────────────────────────────
+const https = require('https');
+
+setInterval(() => {
+  const url = process.env.RAILWAY_STATIC_URL || `http://localhost:${PORT}/health`;
+  https.get(url, (res) => {
+    console.log(`🔄 Keep-alive ping: ${res.statusCode}`);
+  }).on('error', (err) => {
+    console.warn('Keep-alive ping failed:', err.message);
+  });
+}, 5 * 60 * 1000); // every 5 minutes
+
 // ── Start ────────────────────────────────────────────────────
 app.listen(PORT, () => {
   console.log(`\n📬  Email server running at http://localhost:${PORT}`);

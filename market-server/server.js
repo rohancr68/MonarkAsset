@@ -74,7 +74,20 @@ app.get('/api/market', async (req, res) => {
 
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
+// ── Keep alive ──────────────────────────────────────────────
+const https = require('https');
+
+setInterval(() => {
+  const url = process.env.RAILWAY_STATIC_URL || `http://localhost:${PORT}/health`;
+  https.get(url, (res) => {
+    console.log(`🔄 Keep-alive ping: ${res.statusCode}`);
+  }).on('error', (err) => {
+    console.warn('Keep-alive ping failed:', err.message);
+  });
+}, 5 * 60 * 1000); // every 5 minutes
+
 app.listen(PORT, () => {
   console.log(`\n📈  Market server → http://localhost:${PORT}/api/market`);
   console.log(`🔄  Refreshes every ${process.env.CACHE_SECONDS || 60}s\n`);
 });
+
