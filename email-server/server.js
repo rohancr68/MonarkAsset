@@ -24,12 +24,13 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Test connection on startup
-transporter.verify((err) => {
-  if (err) console.error('❌  Mail config error:', err.message);
-  else     console.log('✅  GoDaddy SMTP connected');
-});
-
+// Test connection on startup (non-blocking)
+setTimeout(() => {
+  transporter.verify((err) => {
+    if (err) console.error('❌  Mail config error:', err.message);
+    else     console.log('✅  GoDaddy SMTP connected');
+  });
+}, 3000);
 // ── POST /api/contact ────────────────────────────────────────
 app.post('/api/contact', async (req, res) => {
   const { firstName, lastName, email, phone, profile, service, message } = req.body;
