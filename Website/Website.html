@@ -285,57 +285,100 @@
   </div>
 
   <div class="reveal">
-    <form class="contact-form" onsubmit="handleSubmit(event)">
-      <div class="form-row">
+ <form
+    class="contact-form"
+    id="contactForm"
+    onsubmit="return handleContactForm(event)">
+
+    <div class="form-row">
         <div class="form-group">
-          <label class="form-label">First Name</label>
-          <input type="text" class="form-input" placeholder="Arjun">
+            <label class="form-label">First Name</label>
+            <input
+                type="text"
+                id="firstName"
+                name="First Name"
+                class="form-input"
+                placeholder="Arjun"
+                required>
         </div>
+
         <div class="form-group">
-          <label class="form-label">Last Name</label>
-          <input type="text" class="form-input" placeholder="Sharma">
+            <label class="form-label">Last Name</label>
+            <input
+                type="text"
+                id="lastName"
+                name="Last Name"
+                class="form-input"
+                placeholder="Sharma">
         </div>
-      </div>
-      <div class="form-group">
+    </div>
+
+    <div class="form-group">
         <label class="form-label">Email Address</label>
-        <input type="email" class="form-input" placeholder="arjun@company.com">
-      </div>
-      <div class="form-group">
+        <input
+            type="email"
+            id="email"
+            name="Email"
+            class="form-input"
+            placeholder="arjun@company.com"
+            required>
+    </div>
+
+    <div class="form-group">
         <label class="form-label">Phone Number</label>
-        <input type="tel" class="form-input" placeholder="+91 98765 43210">
-      </div>
-      <div class="form-group">
+        <input
+            type="tel"
+            id="phone"
+            name="Phone Number"
+            class="form-input"
+            placeholder="+91 98765 43210">
+    </div>
+
+    <div class="form-group">
         <label class="form-label">I am a</label>
-        <select class="form-select">
-          <option value="" disabled selected>Select your profile</option>
-          <option>High-Net-Worth Individual</option>
-          <option>Business Owner / Entrepreneur</option>
-          <option>Family / Retiree</option>
-          <option>Young Investor</option>
-          <option>Other</option>
+        <select
+            id="profile"
+            name="Profile"
+            class="form-select"
+            required>
+            <option value="" disabled selected>Select your profile</option>
+            <option>High-Net-Worth Individual</option>
+            <option>Business Owner / Entrepreneur</option>
+            <option>Family / Retiree</option>
+            <option>Young Investor</option>
+            <option>Other</option>
         </select>
-      </div>
-      <div class="form-group">
+    </div>
+
+    <div class="form-group">
         <label class="form-label">Service of Interest</label>
-        <select class="form-select">
-          <option value="" disabled selected>Select a service</option>
-          <option>Portfolio Management</option>
-          <option>Tax & Estate Planning</option>
-          <option>Real Estate Advisory</option>
-          <option>Retirement Planning</option>
-          <option>Business Owner Advisory</option>
-          <option>Young Investor Programme</option>
+        <select
+            id="service"
+            name="Service of Interest"
+            class="form-select"
+            required>
+            <option value="" disabled selected>Select a service</option>
+            <option>Portfolio Management</option>
+            <option>Tax & Estate Planning</option>
+            <option>Real Estate Advisory</option>
+            <option>Retirement Planning</option>
+            <option>Business Owner Advisory</option>
+            <option>Young Investor Programme</option>
         </select>
-      </div>
-      <div class="form-group">
+    </div>
+
+    <div class="form-group">
         <label class="form-label">Message (Optional)</label>
-        <textarea class="form-textarea" placeholder="Tell us about your financial goals…"></textarea>
-      </div>
-      <button type="submit" class="form-submit">Request a Consultation</button>
-      <div id="form-success" style="display:none;font-size:0.85rem;color:var(--gold-light);margin-top:0.5rem;letter-spacing:0.05em;">
-        ✦ Thank you. A MonarkAsset advisor will reach out within 24 hours.
-      </div>
-    </form>
+        <textarea
+            id="message"
+            name="Message"
+            class="form-textarea"
+            placeholder="Tell us about your financial goals..."></textarea>
+    </div>
+
+    <button type="submit" class="form-submit">Request a Consultation</button>
+    <div id="formMessage" class="form-message"></div>
+</form>
   </div>
 </section>
 
@@ -374,44 +417,62 @@
   });
 
   // ── Contact form ──
-  async function handleSubmit(e) {
-    e.preventDefault();
-    const btn = e.target.querySelector('button');
-    btn.disabled = true;
-    btn.textContent = 'Sending…';
+ function handleContactForm(event) {
+    event.preventDefault();
 
-    const inputs  = e.target.querySelectorAll('input');
-    const selects = e.target.querySelectorAll('select');
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName  = document.getElementById('lastName').value.trim();
+    const email     = document.getElementById('email').value.trim();
+    const phone     = document.getElementById('phone').value.trim();
+    const profile   = document.getElementById('profile').value;
+    const service   = document.getElementById('service').value;
+    const message   = document.getElementById('message').value.trim();
+    const msgBox    = document.getElementById('formMessage');
 
-    try {
-      const res  = await fetch('https://monarkasset-production-1e10.up.railway.app/api/contact', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          firstName: inputs[0].value,
-          lastName:  inputs[1].value,
-          email:     inputs[2].value,
-          phone:     inputs[3].value,
-          profile:   selects[0].value,
-          service:   selects[1].value,
-          message:   e.target.querySelector('textarea').value,
-        }),
-      });
-      const json = await res.json();
-
-      if (json.success) {
-        document.getElementById('form-success').style.display = 'block';
-        e.target.reset();
-      } else {
-        alert('Something went wrong. Please try again.');
-      }
-    } catch {
-      alert('Could not connect to the server.');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Request a Consultation';
+    if (!firstName || !email || !profile || !service) {
+        showFormMessage('Please fill in all required fields.', 'error');
+        return;
     }
-  }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        showFormMessage('Please enter a valid email address.', 'error');
+        return;
+    }
+
+    const name = [firstName, lastName].filter(Boolean).join(' ');
+    const body = encodeURIComponent(
+        'Name: ' + name + '\n' +
+        'Email: ' + email + '\n' +
+        'Phone: ' + (phone || 'N/A') + '\n' +
+        'Profile: ' + profile + '\n' +
+        'Service: ' + service + '\n\n' +
+        (message || '')
+    );
+    window.location.href = 'mailto:contact@monarkasset.com' +
+        '?subject=' + encodeURIComponent('New Consultation Request - ' + name) +
+        '&body=' + body;
+
+    showFormMessage('Thank you! Your email client has been opened.', 'success');
+
+    setTimeout(() => {
+        ['firstName','lastName','email','phone','message'].forEach(id => {
+            document.getElementById(id).value = '';
+        });
+        ['profile','service'].forEach(id => {
+            document.getElementById(id).selectedIndex = 0;
+        });
+        msgBox.style.display = 'none';
+        msgBox.className = 'form-message';
+    }, 3000);
+}
+
+function showFormMessage(msg, type) {
+    const msgBox = document.getElementById('formMessage');
+    if (!msgBox) return;
+    msgBox.textContent = msg;
+    msgBox.className = 'form-message ' + type;
+    msgBox.style.display = 'block';
+}
   async function fetchMarketData() {
   try {
     const res  = await fetch('monarkasset-production.up.railway.app/api/market');
