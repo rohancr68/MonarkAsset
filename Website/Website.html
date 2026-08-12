@@ -75,7 +75,7 @@
   <div class="ticker-inner" id="ticker-inner">
     <div class="ticker-item">Loading market data…</div>
   </div>
-</div>
+</div> --!>
 </section>
 
 <!-- ABOUT -->
@@ -415,8 +415,6 @@
     sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) cur = s.id; });
     navLinks.forEach(l => { l.style.color = l.getAttribute('href') === '#'+cur ? 'var(--green)' : ''; });
   });
-
-  
 
   // ── Contact form ──
  function handleContactForm(event) {
